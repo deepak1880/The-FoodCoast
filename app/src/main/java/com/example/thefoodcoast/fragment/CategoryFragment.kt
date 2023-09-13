@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 import com.example.thefoodcoast.R
+
 class CategoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

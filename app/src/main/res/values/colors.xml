@@ -6,4 +6,5 @@
     <color name="accent">#F52c56</color>
     <color name="blue"> #000080</color>
     <color name="red">#FF0000</color>
+    <color name="shimmer_color">#dddddd</color>
 </resources>

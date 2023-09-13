@@ -8,6 +8,8 @@
     <string name="like_eat">What would you like to eat</string>
     <string name="over_popular">Most Popular Meal</string>
     <string name="category">Category</string>
+    <string name="sea_food">Seafood</string>
+    <string name="total_meal">Total Dishes = %1$s</string>
 
     <string name="instruction">Instruction</string>
 

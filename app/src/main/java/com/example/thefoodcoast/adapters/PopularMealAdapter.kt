@@ -37,7 +37,7 @@ class PopularMealAdapter() : RecyclerView.Adapter<PopularMealAdapter.PopularMeal
             .load(mealsList[position].strMealThumb)
             .into(holder.binding.popularImage)
 
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             itemOnClick?.invoke(mealsList[position])
         }
     }

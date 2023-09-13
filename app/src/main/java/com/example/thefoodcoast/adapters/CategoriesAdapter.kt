@@ -11,10 +11,13 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
 
     private var categoriesList = ArrayList<Category>()
 
+
     fun setCategoryList(categoriesList: List<Category>) {
         this.categoriesList = categoriesList as ArrayList<Category>
         notifyDataSetChanged()
     }
+
+    var itemOnClick: ((Category) -> Unit)? = null
 
     class CategoryViewHolder(var binding: CategoryMealBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -33,8 +36,10 @@ class CategoriesAdapter() : RecyclerView.Adapter<CategoriesAdapter.CategoryViewH
         Glide.with(holder.itemView)
             .load(categoriesList[position].strCategoryThumb)
             .into(holder.binding.categoryImageView)
+        holder.binding.categoryTextView.text = categoriesList[position].strCategory
 
-        holder.binding.categoryTextView.text=categoriesList[position].strCategory
+        holder.itemView.setOnClickListener {
+            itemOnClick!!.invoke(categoriesList[position])
+        }
     }
-
 }

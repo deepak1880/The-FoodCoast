@@ -9,7 +9,6 @@ import com.example.thefoodcoast.R
 
 
 class FavouriteFragment : Fragment() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

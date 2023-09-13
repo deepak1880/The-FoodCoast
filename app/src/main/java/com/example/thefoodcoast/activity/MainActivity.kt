@@ -1,7 +1,7 @@
 package com.example.thefoodcoast.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.thefoodcoast.R
 import com.example.thefoodcoast.databinding.ActivityMainBinding
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(HomeFragment())
 
@@ -29,9 +29,10 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
-    private fun replaceFragment(fragment:Fragment){
-        val ft=supportFragmentManager.beginTransaction()
-        ft.replace(R.id.frameLayout,fragment)
+
+    private fun replaceFragment(fragment: Fragment) {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.frameLayout, fragment)
         ft.commit()
     }
 }
