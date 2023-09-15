@@ -2,12 +2,14 @@ package com.example.thefoodcoast.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.thefoodcoast.R
 import com.example.thefoodcoast.databinding.ActivityMainBinding
-import com.example.thefoodcoast.fragment.CategoryFragment
-import com.example.thefoodcoast.fragment.FavouriteFragment
-import com.example.thefoodcoast.fragment.HomeFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,24 +17,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(HomeFragment())
 
-        binding.bottomNavigation.setOnItemSelectedListener {
+        val navView: BottomNavigationView = binding.bottomNavigation
 
-            when (it.itemId) {
-                R.id.homeFragment -> replaceFragment(HomeFragment())
-                R.id.favouritesFragment -> replaceFragment(FavouriteFragment())
-                R.id.categoriesFragment -> replaceFragment(CategoryFragment())
-            }
-            true
-        }
-    }
+        val navController = findNavController(R.id.fragentContainer)
 
-    private fun replaceFragment(fragment: Fragment) {
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.frameLayout, fragment)
-        ft.commit()
+        //TODO : TO only be used when we are adding the Action bar
+        //setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 }

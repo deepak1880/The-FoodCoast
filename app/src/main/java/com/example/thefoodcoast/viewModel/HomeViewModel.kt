@@ -7,6 +7,7 @@ import com.example.thefoodcoast.model.CategoryList
 import com.example.thefoodcoast.model.MealList
 import com.example.thefoodcoast.model.MealsByCategoryList
 import com.example.thefoodcoast.repository.MealRepository
+import com.example.thefoodcoast.retrofit.Response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,11 +21,14 @@ class HomeViewModel(private val respository: MealRepository) : ViewModel() {
             respository.getRandomMeal()
             respository.getPopularMeal("Seafood")
             respository.getCategoryMeal()
+            respository.seachMeal("Seafood")
         }
     }
 
-    val observerRandomMealLiveData: LiveData<MealList> get() = respository.observerRandomMealLiveData
-    val observerPopularMealLiveData: LiveData<MealsByCategoryList> get() = respository.observerPopularMealLiveData
-    val observerCategoryLiveData: LiveData<CategoryList> get() = respository.observerCategoryLiveData
+    val observerRandomMealLiveData: LiveData<Response<MealList>> get() = respository.observerRandomMealLiveData
+    val observerPopularMealLiveData: LiveData<Response<MealsByCategoryList>> get() = respository.observerPopularMealLiveData
+    val observerCategoryLiveData: LiveData<Response<CategoryList>> get() = respository.observerCategoryLiveData
+    val observerSearchMeal: LiveData<MealList> get() = respository.observerSearchMeal
+
 
 }

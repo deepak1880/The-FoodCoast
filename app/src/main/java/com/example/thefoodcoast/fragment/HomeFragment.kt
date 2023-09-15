@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,8 +16,10 @@ import com.example.thefoodcoast.activity.MealByCategoryMealActivity
 import com.example.thefoodcoast.adapters.CategoriesAdapter
 import com.example.thefoodcoast.adapters.PopularMealAdapter
 import com.example.thefoodcoast.databinding.FragmentHomeBinding
+import com.example.thefoodcoast.fragment.HomeFragment.Companion.MEAL_ID
 import com.example.thefoodcoast.model.Meal
 import com.example.thefoodcoast.repository.MealRepository
+import com.example.thefoodcoast.retrofit.Response
 import com.example.thefoodcoast.retrofit.RetrofitInstance.retrofit
 import com.example.thefoodcoast.viewModel.HomeViewModel
 import com.example.thefoodcoast.viewModel.HomeViewModelFactory
@@ -44,12 +47,13 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         popularAdapter = PopularMealAdapter()
 
         val mealService = retrofit
         val repository = MealRepository(mealService)
         homeViewModel =
-            ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+            ViewModelProvider(this, HomeViewModelFactory(repository,))[HomeViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -100,7 +104,19 @@ class HomeFragment : Fragment() {
         homeViewModel?.observerCategoryLiveData?.observe(
             viewLifecycleOwner
         ) { categories ->
-            categoriesAdapter?.setCategoryList(categories.categories)
+            when(categories){
+                is Response.Loading ->{
+                    binding.shimmer.visibility=View.VISIBLE
+                }
+                is Response.Success->{
+                    categories.data?.let { categoriesAdapter?.setCategoryList(it.categories) }
+                }
+                is Response.Failure->{
+                    categories.errorMessage
+                    Toast.makeText(context,categories.errorMessage.toString(),Toast.LENGTH_LONG).show()
+                }
+            }
+
         }
     }
 
@@ -128,7 +144,20 @@ class HomeFragment : Fragment() {
         homeViewModel?.observerPopularMealLiveData?.observe(
             viewLifecycleOwner
         ) {
-            popularAdapter?.setMeals(mealsList = it.meals)
+            when(it){
+                    is Response.Loading ->{
+                        binding.shimmer.visibility=View.VISIBLE
+                    }
+                    is Response.Success->{
+                        it.data?.let { it1 -> popularAdapter?.setMeals(mealsList = it1.meals) }
+                        binding.shimmer.visibility=View.GONE
+                    }
+                    is Response.Failure->{
+                        it.errorMessage
+                        Toast.makeText(context,it.errorMessage.toString(),Toast.LENGTH_LONG).show()
+                    }
+            }
+
         }
     }
 
@@ -155,10 +184,22 @@ class HomeFragment : Fragment() {
         homeViewModel?.observerRandomMealLiveData?.observe(
             viewLifecycleOwner
         ) { value ->
-            randomMeal = value.meals
-            Glide.with(this@HomeFragment)
-                .load(value!!.meals[0].strMealThumb)
-                .into(binding.cardViewMealImage)
+            when(value){
+                is Response.Loading ->{
+                    binding.shimmer.visibility=View.VISIBLE
+                }
+                is Response.Success->{
+                    randomMeal = value.data?.meals
+                    Glide.with(this@HomeFragment)
+                        .load(value.data!!.meals[0]?.strMealThumb)
+                        .into(binding.cardViewMealImage)
+                    binding.shimmer.visibility=View.GONE
+                }
+                is Response.Failure->{
+                    value.errorMessage
+                    Toast.makeText(context,value.errorMessage.toString(),Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

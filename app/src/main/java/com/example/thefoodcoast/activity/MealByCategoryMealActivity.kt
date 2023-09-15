@@ -28,6 +28,7 @@ class MealByCategoryMealActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        supportActionBar?.hide()
         mealByCategoryRecyclerView()
 
         val categoryMeal = intent.getParcelableExtra<Category>(HomeFragment.CATEGORY_MEAL)
@@ -43,8 +44,8 @@ class MealByCategoryMealActivity : AppCompatActivity() {
         }
         categoryViewModel?.observerMealByCategoryList?.observe(this) {
             binding.categoryMealTextView.text =
-                resources.getString(R.string.total_meal, it.meals.size.toString())
-            mealByCategoryAdapter?.setMeal(it.meals)
+                resources.getString(R.string.total_meal, it.data?.meals?.size.toString())
+            it.data?.let { it1 -> mealByCategoryAdapter?.setMeal(it1.meals) }
         }
     }
 

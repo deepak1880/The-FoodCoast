@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thefoodcoast.model.MealsByCategoryList
 import com.example.thefoodcoast.repository.MealRepository
+import com.example.thefoodcoast.retrofit.Response
 import kotlinx.coroutines.launch
 
 class MealByCategoryViewModel(private val respository: MealRepository, categoryName: String) :
@@ -16,7 +17,7 @@ class MealByCategoryViewModel(private val respository: MealRepository, categoryN
         }
     }
 
-    val observerMealByCategoryList: LiveData<MealsByCategoryList> get() = respository.observerMealByCategoryList
+    val observerMealByCategoryList: LiveData<Response<MealsByCategoryList>>get() = respository.observerMealByCategoryList
 
 
 }

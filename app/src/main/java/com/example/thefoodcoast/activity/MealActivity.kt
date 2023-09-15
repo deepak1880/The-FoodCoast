@@ -3,6 +3,7 @@ package com.example.thefoodcoast.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.thefoodcoast.databinding.ActivityMealBinding
@@ -25,6 +26,8 @@ class MealActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportActionBar?.hide();
+
         _binding = ActivityMealBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -35,9 +38,14 @@ class MealActivity : AppCompatActivity() {
     }
 
     private fun onYouTubeImageClick() {
-        binding.youtube.setOnClickListener {
-            val iNext = Intent(Intent.ACTION_VIEW, Uri.parse(mealYoutube))
-            startActivity(iNext)
+        if(mealYoutube!=null && mealYoutube!!.isNotEmpty()) {
+            binding.youtube.visibility = View.VISIBLE
+            binding.youtube.setOnClickListener {
+                val iNext = Intent(Intent.ACTION_VIEW, Uri.parse(mealYoutube))
+                startActivity(iNext)
+            }
+        }else{
+            binding.youtube.visibility=View.GONE
         }
     }
 
