@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         val navController = findNavController(R.id.fragentContainer)
 
-        //TODO : TO only be used when we are adding the Action bar
-        //setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
 }
