@@ -3,6 +3,7 @@ package com.example.thefoodcoast.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.thefoodcoast.R
 import com.example.thefoodcoast.adapters.MealByCategoryAdapter
@@ -13,6 +14,7 @@ import com.example.thefoodcoast.repository.MealRepository
 import com.example.thefoodcoast.retrofit.RetrofitInstance.retrofit
 import com.example.thefoodcoast.viewModel.MealByCategoryViewModel
 import com.example.thefoodcoast.viewModel.MealByCategoryViewModelFactory
+import kotlinx.coroutines.launch
 
 class MealByCategoryMealActivity : AppCompatActivity() {
 
@@ -42,10 +44,12 @@ class MealByCategoryMealActivity : AppCompatActivity() {
             )[MealByCategoryViewModel::class.java]
 
         }
-        categoryViewModel?.observerMealByCategoryList?.observe(this) {
-            binding.categoryMealTextView.text =
-                resources.getString(R.string.total_meal, it.data?.meals?.size.toString())
-            it.data?.let { it1 -> mealByCategoryAdapter?.setMeal(it1.meals) }
+        lifecycleScope.launch {
+            categoryViewModel?.mealsByCategory?.collect {
+                binding.categoryMealTextView.text =
+                    resources.getString(R.string.total_meal, it.data?.meals?.size.toString())
+                it.data?.let { it1 -> mealByCategoryAdapter?.setMeal(it1.meals) }
+            }
         }
     }
 

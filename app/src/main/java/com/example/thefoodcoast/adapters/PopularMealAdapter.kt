@@ -7,7 +7,8 @@ import com.bumptech.glide.Glide
 import com.example.thefoodcoast.databinding.PopularMealBinding
 import com.example.thefoodcoast.model.MealsByCategory
 
-class PopularMealAdapter() : RecyclerView.Adapter<PopularMealAdapter.PopularMealViewHolder>() {
+class
+PopularMealAdapter() : RecyclerView.Adapter<PopularMealAdapter.PopularMealViewHolder>() {
 
     private var mealsList = ArrayList<MealsByCategory>()
 

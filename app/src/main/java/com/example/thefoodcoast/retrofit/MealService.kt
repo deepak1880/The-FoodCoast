@@ -3,6 +3,7 @@ package com.example.thefoodcoast.retrofit
 import com.example.thefoodcoast.model.CategoryList
 import com.example.thefoodcoast.model.MealList
 import com.example.thefoodcoast.model.MealsByCategoryList
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

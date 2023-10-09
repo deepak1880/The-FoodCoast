@@ -1,13 +1,16 @@
 package com.example.thefoodcoast.fragment
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -16,13 +19,14 @@ import com.example.thefoodcoast.activity.MealByCategoryMealActivity
 import com.example.thefoodcoast.adapters.CategoriesAdapter
 import com.example.thefoodcoast.adapters.PopularMealAdapter
 import com.example.thefoodcoast.databinding.FragmentHomeBinding
-import com.example.thefoodcoast.fragment.HomeFragment.Companion.MEAL_ID
 import com.example.thefoodcoast.model.Meal
+import com.example.thefoodcoast.receiver.ConnectivityReceiver
 import com.example.thefoodcoast.repository.MealRepository
 import com.example.thefoodcoast.retrofit.Response
 import com.example.thefoodcoast.retrofit.RetrofitInstance.retrofit
 import com.example.thefoodcoast.viewModel.HomeViewModel
 import com.example.thefoodcoast.viewModel.HomeViewModelFactory
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -34,6 +38,15 @@ class HomeFragment : Fragment() {
     private var popularAdapter: PopularMealAdapter? = null
     private var categoriesAdapter: CategoriesAdapter? = null
 
+    private val connectivityReceiver = ConnectivityReceiver {
+        Log.e(TAG, ": ")
+        if (it) {
+            Toast.makeText(requireContext(), "Internet Connected", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "No Internet", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         const val MEAL_ID = "idMeal"
         const val MEAL_THUMB = "mealThumb"
@@ -43,17 +56,6 @@ class HomeFragment : Fragment() {
         const val MEAL_INSTRUCTION = "mealInstruction"
         const val MEAL_YOUTUBE = "mealYoutube"
         const val CATEGORY_MEAL = "categoryMeal"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        popularAdapter = PopularMealAdapter()
-
-        val mealService = retrofit
-        val repository = MealRepository(mealService)
-        homeViewModel =
-            ViewModelProvider(this, HomeViewModelFactory(repository,))[HomeViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -68,6 +70,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        popularAdapter = PopularMealAdapter()
+
+        val mealService = retrofit
+        val repository = MealRepository(mealService)
+        homeViewModel =
+            ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+
+
+
         observerRandomMealDataLiveData()
         onRandomMealClick()
 
@@ -79,6 +90,12 @@ class HomeFragment : Fragment() {
         categoryRecyclerView()
         onClickCategoryMeal()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val intent = IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
+        requireActivity().registerReceiver(connectivityReceiver, intent)
     }
 
     private fun onClickCategoryMeal() {
@@ -101,22 +118,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun observerCategoryLiveData() {
-        homeViewModel?.observerCategoryLiveData?.observe(
-            viewLifecycleOwner
-        ) { categories ->
-            when(categories){
-                is Response.Loading ->{
-                    binding.shimmer.visibility=View.VISIBLE
-                }
-                is Response.Success->{
-                    categories.data?.let { categoriesAdapter?.setCategoryList(it.categories) }
-                }
-                is Response.Failure->{
-                    categories.errorMessage
-                    Toast.makeText(context,categories.errorMessage.toString(),Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            homeViewModel?.categoryMeal?.collect(
+            ) { categories ->
+                when (categories) {
+                    is Response.Loading -> {
+                        binding.shimmer.visibility = View.VISIBLE
+                        binding.categoryCardView.visibility = View.VISIBLE
+                    }
+
+                    is Response.Success -> {
+                        categories.data?.let { categoriesAdapter?.setCategoryList(it.categories) }
+                    }
+
+                    is Response.Failure -> {
+                        categories.errorMessage
+                        Toast.makeText(
+                            context,
+                            categories.errorMessage.toString(),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
                 }
             }
-
         }
     }
 
@@ -141,23 +166,28 @@ class HomeFragment : Fragment() {
     }
 
     private fun observerPopularMealLiveData() {
-        homeViewModel?.observerPopularMealLiveData?.observe(
-            viewLifecycleOwner
-        ) {
-            when(it){
-                    is Response.Loading ->{
-                        binding.shimmer.visibility=View.VISIBLE
+        lifecycleScope.launch {
+            homeViewModel?.popularMeal?.collect(
+            ) {
+                when (it) {
+                    is Response.Loading -> {
+                        binding.shimmer.visibility = View.VISIBLE
+                        binding.overPopularCardView.visibility = View.VISIBLE
                     }
-                    is Response.Success->{
-                        it.data?.let { it1 -> popularAdapter?.setMeals(mealsList = it1.meals) }
-                        binding.shimmer.visibility=View.GONE
-                    }
-                    is Response.Failure->{
-                        it.errorMessage
-                        Toast.makeText(context,it.errorMessage.toString(),Toast.LENGTH_LONG).show()
-                    }
-            }
 
+                    is Response.Success -> {
+                        it.data?.let { it1 -> popularAdapter?.setMeals(mealsList = it1.meals) }
+                        binding.shimmer.visibility = View.GONE
+                    }
+
+                    is Response.Failure -> {
+                        it.errorMessage
+                        Toast.makeText(context, it.errorMessage.toString(), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+
+            }
         }
     }
 
@@ -181,26 +211,41 @@ class HomeFragment : Fragment() {
     }
 
     private fun observerRandomMealDataLiveData() {
-        homeViewModel?.observerRandomMealLiveData?.observe(
-            viewLifecycleOwner
-        ) { value ->
-            when(value){
-                is Response.Loading ->{
-                    binding.shimmer.visibility=View.VISIBLE
-                }
-                is Response.Success->{
-                    randomMeal = value.data?.meals
-                    Glide.with(this@HomeFragment)
-                        .load(value.data!!.meals[0]?.strMealThumb)
-                        .into(binding.cardViewMealImage)
-                    binding.shimmer.visibility=View.GONE
-                }
-                is Response.Failure->{
-                    value.errorMessage
-                    Toast.makeText(context,value.errorMessage.toString(),Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            homeViewModel?.randomMeal?.collect { mealList ->
+                Log.e(TAG, "observerRandomMealDataLiveData: Success")
+                when (mealList) {
+                    is Response.Loading -> {
+                        Log.e(TAG, "observerRandomMealDataLiveData: ")
+                        binding.shimmer.visibility = View.VISIBLE
+                        binding.mealCardView.visibility = View.VISIBLE
+                    }
+
+                    is Response.Success -> {
+                        randomMeal = mealList.data?.meals
+                        Glide.with(this@HomeFragment)
+                            .load(mealList.data!!.meals[0]?.strMealThumb)
+                            .into(binding.cardViewMealImage)
+                        binding.shimmer.visibility = View.GONE
+                    }
+
+                    is Response.Failure -> {
+                        mealList.errorMessage
+                        Toast.makeText(
+                            context,
+                            mealList.errorMessage.toString(),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unregisterReceiver(connectivityReceiver)
     }
 
     override fun onDestroy() {

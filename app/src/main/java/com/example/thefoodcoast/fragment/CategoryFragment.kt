@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.thefoodcoast.activity.MealByCategoryMealActivity
 import com.example.thefoodcoast.adapters.CategoriesAdapter
@@ -17,6 +17,7 @@ import com.example.thefoodcoast.repository.MealRepository
 import com.example.thefoodcoast.retrofit.RetrofitInstance.retrofit
 import com.example.thefoodcoast.viewModel.HomeViewModel
 import com.example.thefoodcoast.viewModel.HomeViewModelFactory
+import kotlinx.coroutines.launch
 
 class CategoryFragment : Fragment() {
 
@@ -28,10 +29,12 @@ class CategoryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mealService=retrofit
-        val repository=MealRepository(mealService)
-        categoryViewModel=ViewModelProvider(this,HomeViewModelFactory(repository))[HomeViewModel::class.java]
+        val mealService = retrofit
+        val repository = MealRepository(mealService)
+        categoryViewModel =
+            ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,6 +51,7 @@ class CategoryFragment : Fragment() {
         onClickCategoryMeal()
 
     }
+
     private fun onClickCategoryMeal() {
         val bundle = Bundle()
         categoryAdapter?.itemOnClick = { category ->
@@ -60,19 +64,20 @@ class CategoryFragment : Fragment() {
     }
 
     private fun categoryRecyclerView() {
-        categoryAdapter=CategoriesAdapter()
+        categoryAdapter = CategoriesAdapter()
         binding?.categoryRecyclerView?.apply {
-            layoutManager=GridLayoutManager(context,3,GridLayoutManager.VERTICAL,false)
-            adapter=categoryAdapter
+            layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+            adapter = categoryAdapter
         }
     }
 
     private fun observecategoryMeal() {
-        categoryViewModel?.observerCategoryLiveData?.observe(
-            viewLifecycleOwner
-        ) { categories ->
-            categories.data?.let { categoryAdapter?.setCategoryList(it.categories) }
+        lifecycleScope.launch {
+            categoryViewModel?.categoryMeal?.collect(
+            ) { categories ->
+                categories.data?.let { categoryAdapter?.setCategoryList(it.categories) }
+            }
         }
     }
-    }
+}
 

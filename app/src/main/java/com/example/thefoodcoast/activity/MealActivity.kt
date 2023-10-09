@@ -38,14 +38,14 @@ class MealActivity : AppCompatActivity() {
     }
 
     private fun onYouTubeImageClick() {
-        if(mealYoutube!=null && mealYoutube!!.isNotEmpty()) {
+        if (mealYoutube != null && mealYoutube!!.isNotEmpty()) {
             binding.youtube.visibility = View.VISIBLE
             binding.youtube.setOnClickListener {
                 val iNext = Intent(Intent.ACTION_VIEW, Uri.parse(mealYoutube))
                 startActivity(iNext)
             }
-        }else{
-            binding.youtube.visibility=View.GONE
+        } else {
+            binding.youtube.visibility = View.GONE
         }
     }
 

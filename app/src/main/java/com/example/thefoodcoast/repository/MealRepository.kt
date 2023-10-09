@@ -1,77 +1,89 @@
 package com.example.thefoodcoast.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.thefoodcoast.model.CategoryList
 import com.example.thefoodcoast.model.MealList
 import com.example.thefoodcoast.model.MealsByCategoryList
 import com.example.thefoodcoast.retrofit.MealService
 import com.example.thefoodcoast.retrofit.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class MealRepository(private val mealService: MealService) {
 
     private var TAG = "MealRepository"
-    private var randomMealLiveData = MutableLiveData<Response<MealList>>()
-    val observerRandomMealLiveData: LiveData<Response<MealList>> get() = randomMealLiveData
 
-    private var popularMealLiveData = MutableLiveData<Response<MealsByCategoryList>>()
-    val observerPopularMealLiveData: LiveData<Response<MealsByCategoryList>>get() = popularMealLiveData
-
-    private var categoryLiveData = MutableLiveData<Response<CategoryList>>()
-    val observerCategoryLiveData: LiveData<Response<CategoryList>>get() = categoryLiveData
-
-    var mealByCategoryLiveData = MutableLiveData<Response<MealsByCategoryList>>()
-    val observerMealByCategoryList: LiveData<Response<MealsByCategoryList>> get() = mealByCategoryLiveData
-
-    private var searchMealLiveData = MutableLiveData<MealList>()
-    val observerSearchMeal: LiveData<MealList> get() = searchMealLiveData
-
-    suspend fun getRandomMeal() {
-
-        val result = mealService.getRandomMeal()
-        if (result?.body() != null) {
-
-            randomMealLiveData.value = Response.Success(result.body())
-        } else {
-            randomMealLiveData.value =
-                Response.Failure("Error found while fetching the Random Meal")
+    fun getRandomMeal(): Flow<Response<MealList>> = flow {
+        try {
+            emit(Response.Loading())
+            val result = mealService.getRandomMeal()
+            if (result?.body() != null) {
+                emit(Response.Success(result.body()))
+            } else {
+                emit(Response.Failure("Error found while fetching the Random Meal"))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getPopularMeal(categoryName: String) {
-        val result = mealService.getPopularMeal(categoryName)
-        if (result?.body() != null) {
-            popularMealLiveData.value = Response.Success(result.body())
-        }else{
-            popularMealLiveData.value=
-            Response.Failure("Error found while fetching the Getting Meal")
+    fun getPopularMeal(categoryName: String): Flow<Response<MealsByCategoryList>> = flow {
+        try {
+            emit(Response.Loading())
+            val result = mealService.getPopularMeal(categoryName)
+            if (result?.body() != null) {
+                emit(Response.Success(result.body()))
+            } else {
+                emit(Response.Failure("Error found while fetching the Getting Meal"))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getCategoryMeal() {
-        val result = mealService.getCategoryMeal()
-        if (result.body() != null) {
-            categoryLiveData.value = Response.Success(result.body())
-        }else{
-            categoryLiveData.value=
+    fun getCategoryMeal(): Flow<Response<CategoryList>> = flow {
+        try {
+            emit(Response.Loading())
+            val result = mealService.getCategoryMeal()
+            if (result.body() != null) {
+                emit(Response.Success(result.body()))
+            } else {
+                emit(
+                    Response.Failure("Error found while fetching the Getting Meal")
+                )
+            }
+        } catch (e: Exception) {
+            emit(
                 Response.Failure("Error found while fetching the Getting Meal")
+            )
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getMealByCategory(categoryName: String) {
-        val result = mealService.getMealByCategory(categoryName)
-        if (result.body() != null) {
-            mealByCategoryLiveData.value = Response.Success(result.body())
-        }else{
-            mealByCategoryLiveData.value=
-                Response.Failure("Error found while fetching the Getting Meal")
+    fun getMealByCategory(categoryName: String): Flow<Response<MealsByCategoryList>> = flow {
+        try {
+            emit(Response.Loading())
+            val result = mealService.getMealByCategory(categoryName)
+            if (result.body() != null) {
+                emit(Response.Success(result.body()))
+            } else {
+                emit(
+                    Response.Failure("Error found while fetching the Getting Meal")
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun seachMeal(mealName: String) {
-        val result = mealService.searchMeal(mealName)
-        if (result.body() != null) {
-            searchMealLiveData.value = result.body()
-        }
-    }
+//    suspend fun seachMeal(mealName: String) {
+//        try {
+//            val result = mealService.searchMeal(mealName)
+//            if (result.body() != null) {
+//                searchMealLiveData.postValue(result.body())
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
 }

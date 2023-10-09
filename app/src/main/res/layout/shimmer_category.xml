@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/categoryImageView"
         android:layout_width="125dp"
-        android:layout_height="125dp"
+        android:layout_height="120dp"
         android:background="@color/shimmer_color"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
