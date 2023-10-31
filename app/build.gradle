@@ -74,4 +74,8 @@ dependencies {
 
     //splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")
+
+    implementation("androidx.room:room-runtime:$lifecycle_version")
+    annotationProcessor("androidx.room:room-compiler:$lifecycle_version")
+    implementation("androidx.room:room-ktx:$lifecycle_version")
 }
