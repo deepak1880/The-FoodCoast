@@ -1,5 +1,6 @@
 package com.example.thefoodcoast.fragment
 
+import android.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,7 @@ import com.example.thefoodcoast.R
 class FavouriteFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        argumgit push -u origin mainents?.let {
 
         }
     }
