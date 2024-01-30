@@ -76,14 +76,19 @@ class MealRepository(private val mealService: MealService) {
         }
     }.flowOn(Dispatchers.IO)
 
-//    suspend fun seachMeal(mealName: String) {
-//        try {
-//            val result = mealService.searchMeal(mealName)
-//            if (result.body() != null) {
-//                searchMealLiveData.postValue(result.body())
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
+    fun searchMeal(): Flow<Response<MealList>> = flow {
+        try {
+            emit(Response.Loading())
+            val result = mealService.searchMeal()
+            if (result.body() != null) {
+                emit(Response.Success(result.body()))
+            } else {
+                emit(
+                    Response.Failure("Error found while fetching the Getting Meal")
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }.flowOn(Dispatchers.IO)
 }

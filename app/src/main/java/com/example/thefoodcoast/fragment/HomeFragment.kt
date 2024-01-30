@@ -243,6 +243,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+
     override fun onStop() {
         super.onStop()
         requireActivity().unregisterReceiver(connectivityReceiver)

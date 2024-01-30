@@ -2,7 +2,6 @@ package com.example.thefoodcoast.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.thefoodcoast.model.CategoryList
 import com.example.thefoodcoast.model.MealList
@@ -31,6 +30,7 @@ class HomeViewModel( repository: MealRepository) : ViewModel() {
     val randomMeal :Flow<Response<MealList>> = repository.getRandomMeal()
     val popularMeal:Flow<Response<MealsByCategoryList>> =repository.getPopularMeal("Seafood")
     val categoryMeal:Flow<Response<CategoryList>> = repository.getCategoryMeal()
+    val searchMeal:Flow<Response<MealList>> =repository.searchMeal()
 
     // val observerRandomMealLiveData: Response<MealList>get() = respository.getRandomMeal().asLiveData(viewModelScope).value!!
 
