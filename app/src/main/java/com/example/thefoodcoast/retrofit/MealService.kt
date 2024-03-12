@@ -1,9 +1,8 @@
 package com.example.thefoodcoast.retrofit
 
-import com.example.thefoodcoast.model.CategoryList
-import com.example.thefoodcoast.model.MealList
-import com.example.thefoodcoast.model.MealsByCategoryList
-import kotlinx.coroutines.flow.Flow
+import com.example.thefoodcoast.model.category.CategoryList
+import com.example.thefoodcoast.model.meal.MealList
+import com.example.thefoodcoast.model.mealbycategory.MealsByCategoryList
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

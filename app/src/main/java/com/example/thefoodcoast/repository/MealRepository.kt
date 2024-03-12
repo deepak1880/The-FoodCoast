@@ -1,8 +1,8 @@
 package com.example.thefoodcoast.repository
 
-import com.example.thefoodcoast.model.CategoryList
-import com.example.thefoodcoast.model.MealList
-import com.example.thefoodcoast.model.MealsByCategoryList
+import com.example.thefoodcoast.model.category.CategoryList
+import com.example.thefoodcoast.model.meal.MealList
+import com.example.thefoodcoast.model.mealbycategory.MealsByCategoryList
 import com.example.thefoodcoast.retrofit.MealService
 import com.example.thefoodcoast.retrofit.Response
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.example.thefoodcoast.model
+package com.example.thefoodcoast.model.category
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

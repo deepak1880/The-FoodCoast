@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.thefoodcoast.databinding.PopularMealBinding
-import com.example.thefoodcoast.model.MealsByCategory
+import com.example.thefoodcoast.model.mealbycategory.MealsByCategory
 
 class
 PopularMealAdapter() : RecyclerView.Adapter<PopularMealAdapter.PopularMealViewHolder>() {

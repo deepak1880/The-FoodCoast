@@ -9,7 +9,7 @@ import com.example.thefoodcoast.R
 import com.example.thefoodcoast.adapters.MealByCategoryAdapter
 import com.example.thefoodcoast.databinding.ActivityCategoryMealBinding
 import com.example.thefoodcoast.fragment.HomeFragment
-import com.example.thefoodcoast.model.Category
+import com.example.thefoodcoast.model.category.Category
 import com.example.thefoodcoast.repository.MealRepository
 import com.example.thefoodcoast.retrofit.RetrofitInstance.retrofit
 import com.example.thefoodcoast.viewModel.MealByCategoryViewModel

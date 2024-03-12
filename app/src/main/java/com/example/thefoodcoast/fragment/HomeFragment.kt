@@ -19,7 +19,7 @@ import com.example.thefoodcoast.activity.MealByCategoryMealActivity
 import com.example.thefoodcoast.adapters.CategoriesAdapter
 import com.example.thefoodcoast.adapters.PopularMealAdapter
 import com.example.thefoodcoast.databinding.FragmentHomeBinding
-import com.example.thefoodcoast.model.Meal
+import com.example.thefoodcoast.model.meal.Meal
 import com.example.thefoodcoast.receiver.ConnectivityReceiver
 import com.example.thefoodcoast.repository.MealRepository
 import com.example.thefoodcoast.retrofit.Response
